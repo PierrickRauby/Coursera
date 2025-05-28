@@ -1,0 +1,3 @@
+May 28 16:56:13 raspberrypi pthread[146112]: [COURSE:1][ASSIGNMENT:1] Linux raspberrypi 6.12.25+rpt-rpi-v8 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64 GNU/Linux
+May 28 16:56:13 raspberrypi pthread[146112]: [COURSE:1][ASSIGNMENT:1] Hello World from Main!
+May 28 16:56:13 raspberrypi pthread[146112]: [COURSE:1][ASSIGNMENT:1] Hello World from Thread!

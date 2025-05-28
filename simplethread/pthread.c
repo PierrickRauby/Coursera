@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sched.h>
+#include <string.h>
 #include <syslog.h>
 
 #define NUM_THREADS 1
@@ -29,20 +30,37 @@ int main (int argc, char *argv[])
    int i;
 
    // open log
-   openlog("pthread", LOG_PID | LOG_CONS, LOG_USER);
+   openlog("pthread", LOG_CONS, LOG_USER);
 
-   // Need to add uname -r info
+   FILE *fp;
+    char buffer[512];
+
+    fp = popen("uname -a", "r");
+    if (fp == NULL)
+    {
+        syslog(LOG_ERR, "[COURSE:1][ASSIGNMENT:1] Failed to run uname -a");
+    }
+    else
+    {
+        if (fgets(buffer, sizeof(buffer), fp) != NULL)
+        {
+            // Strip newline, if any
+            buffer[strcspn(buffer, "\n")] = 0;
+            syslog(LOG_INFO, "[COURSE:1][ASSIGNMENT:1] %s", buffer);
+        }
+        pclose(fp);
+    }
+
 
    syslog(LOG_INFO, "[COURSE:1][ASSIGNMENT:1] Hello World from Main!");
 
    for(i=0; i < NUM_THREADS; i++)
    {
 
-       pthread_create(&threads[i],   // pointer to thread descriptor
-                      (void *)0,     // use default attributes
-                      threadFunc, // thread function entry point
+       pthread_create(&threads[i],   
+                      (void *)0,     
+                      threadFunc, 
                         NULL
-                    //   (void *)&(threadParams[i]) // parameters to pass in
                      );
 
    }
