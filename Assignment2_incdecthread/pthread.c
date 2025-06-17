@@ -16,12 +16,14 @@ typedef struct
 pthread_t threads[NUM_THREADS];
 threadParams_t threadParams[NUM_THREADS];
 
+/// @brief thread function, calculate the sum based on threadIdx and
+///        outputs in syslog
 void *threadFunc(void *threadp)
 {
     int sum = 0;
     int i;
     threadParams_t *threadParams = (threadParams_t *)threadp;
-    for (i = 0; i < threadParams->threadIdx;i++)
+    for (i = 0; i < threadParams->threadIdx; i++)
     {
         sum++;
     }
@@ -40,6 +42,7 @@ int main(int argc, char *argv[])
     FILE *fp;
     char buffer[512];
     fp = popen("uname -a", "r");
+    // handle errors
     if (fp == NULL)
     {
         syslog(LOG_ERR, "[COURSE:1][ASSIGNMENT:2] Failed to run uname -a");
@@ -55,11 +58,10 @@ int main(int argc, char *argv[])
         pclose(fp);
     }
 
-
     // Create and join threads
     for (i = 0; i < NUM_THREADS; i++)
     {
-        threadParams[i].threadIdx=i; // populate param array for current thread
+        threadParams[i].threadIdx = i;            // populate param array for current thread
         pthread_create(&threads[i],               // pointer to thread descriptor
                        (void *)0,                 // use default attributes
                        threadFunc,                // thread function entry point
@@ -67,6 +69,7 @@ int main(int argc, char *argv[])
         );
     }
 
+    // wait for all thread to complete
     for (i = 0; i < NUM_THREADS; i++)
         pthread_join(threads[i], NULL);
 
